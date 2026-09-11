@@ -7,7 +7,7 @@
 # Supabase, etc. all work — see README "Deploying to Vercel").
 set -o errexit
 
-pip install -r requirements.txt
+uv pip install --system -r requirements.txt
 
 python manage.py collectstatic --noinput --clear
 
