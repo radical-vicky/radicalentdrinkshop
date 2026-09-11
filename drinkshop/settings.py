@@ -159,7 +159,7 @@ USE_TZ = True
 # and gives free image CDN/transformations. Get credentials from
 # https://cloudinary.com/console.
 # ---------------------------------------------------------------------------
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
