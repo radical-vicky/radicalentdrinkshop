@@ -117,21 +117,23 @@ WSGI_APPLICATION = 'drinkshop.wsgi.application'
 # ---------------------------------------------------------------------------
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'shop_db',        # your DB name in phpMyAdmin
-        'USER': 'root',                # default XAMPP user
-        'PASSWORD': '',                # default XAMPP password is empty
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
-    }
-}
+# ---------------------------------------------------------------------------
+# Database
+# Local dev falls back to SQLite so `runserver` works with zero setup.
+# On Vercel (or any serverless/container host with an ephemeral filesystem),
+# set DATABASE_URL to a managed Postgres URL — Vercel Postgres, Neon,
+# Supabase, Railway, Render, etc. all work.
+# ---------------------------------------------------------------------------
+import dj_database_url
 
+DATABASES = {
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        conn_health_checks=True,
+        ssl_require=not DEBUG,
+    )
+}
 # ---------------------------------------------------------------------------
 # Password validation
 # ---------------------------------------------------------------------------
