@@ -1,11 +1,10 @@
 #!/bin/bash
-# Runs during every Vercel build (see vercel.json's static-build step).
-# This is where "automatic migration on deploy" actually happens — Vercel
-# has no Heroku-style release phase, so build time is the right place to
-# run it. Requires DATABASE_URL to be set in the Vercel project's env vars
-# and reachable from the build environment (Vercel Postgres, Neon,
-# Supabase, etc. all work — see README "Deploying to Vercel").
 set -o errexit
+
+# Ensure uv resolves against 3.12 regardless of what the static-build
+# step auto-detected. Vercel's @vercel/static-build doesn't read the
+# runtime field from vercel.json — only @vercel/python does.
+export UV_PYTHON=3.12
 
 uv pip install --system -r requirements.txt
 
