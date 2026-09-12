@@ -255,7 +255,7 @@ if EMAIL_HOST and not DEBUG:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'DrinkShop <noreply@drinkshop.local>')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'RadicaldrinkShop <info.radicaldrinkshp@gmail.com>')
 
 # ---------------------------------------------------------------------------
 # Shop settings
