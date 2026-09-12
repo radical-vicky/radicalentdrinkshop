@@ -214,7 +214,7 @@ LOGOUT_REDIRECT_URL = 'store:home'
 # (not just email) since existing accounts/migrations use it; allauth will
 # ask for one on signup unless you flip ACCOUNT_USERNAME_REQUIRED off.
 # ---------------------------------------------------------------------------
-ACCOUNT_EMAIL_VERIFICATION = os.environ.get('ACCOUNT_EMAIL_VERIFICATION', 'mandatory')
+ACCOUNT_EMAIL_VERIFICATION = os.environ.get('ACCOUNT_EMAIL_VERIFICATION', '')
 ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_UNIQUE_EMAIL = True
@@ -261,13 +261,13 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'RadicaldrinkShop <inf
 # Shop settings
 # ---------------------------------------------------------------------------
 # Delivery fee in KES, charged per order (flat-rate; customize per zone later).
-DELIVERY_FEE = int(os.environ.get('DELIVERY_FEE', '150'))
+DELIVERY_FEE = int(os.environ.get('DELIVERY_FEE', ''))
 
 # Free delivery at both ends of the order-size spectrum: small orders
 # (low-fuss threshold) and bulk/wholesale-size orders. Set either to 0 to
 # disable that end. Everything in between pays the normal zone fee.
-FREE_DELIVERY_MAX_SMALL_ORDER = int(os.environ.get('FREE_DELIVERY_MAX_SMALL_ORDER', '300'))
-FREE_DELIVERY_MIN_WHOLESALE_ORDER = int(os.environ.get('FREE_DELIVERY_MIN_WHOLESALE_ORDER', '5000'))
+FREE_DELIVERY_MAX_SMALL_ORDER = int(os.environ.get('FREE_DELIVERY_MAX_SMALL_ORDER', ''))
+FREE_DELIVERY_MIN_WHOLESALE_ORDER = int(os.environ.get('FREE_DELIVERY_MIN_WHOLESALE_ORDER', ''))
 
 # Default estimated delivery time (minutes) used in the "order received"
 # email when the delivery address doesn't match a configured DeliveryZone
@@ -278,12 +278,12 @@ DEFAULT_DELIVERY_ETA_MINUTES = int(os.environ.get('DEFAULT_DELIVERY_ETA_MINUTES'
 # delivered via this site. Kenya's NACADA rules currently restrict online
 # sale and home delivery of alcohol — keep this True unless your legal
 # situation changes. See README for details.
-DISALLOW_ALCOHOL_DELIVERY = os.environ.get('DISALLOW_ALCOHOL_DELIVERY', 'True') == 'True'
+DISALLOW_ALCOHOL_DELIVERY = os.environ.get('DISALLOW_ALCOHOL_DELIVERY', '') == ''
 
 # Referral bonus (KES) credited to BOTH the referrer and the new signup
 # when someone joins via a ?ref= link. Set to 0 to disable bonuses while
 # keeping referral tracking itself active.
-REFERRAL_BONUS_KES = int(os.environ.get('REFERRAL_BONUS_KES', '50'))
+REFERRAL_BONUS_KES = int(os.environ.get('REFERRAL_BONUS_KES', ''))
 
 # ---------------------------------------------------------------------------
 # M-Pesa Daraja API settings (Safaricom)
