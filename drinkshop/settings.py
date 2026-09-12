@@ -23,7 +23,14 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = [h for h in os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',') if h]
+
+# Vercel serves every deployment from both the stable production alias and a
+# per-deploy subdomain that changes on every push (e.g.
+# radicalentdrinkshop-<hash>-<team>.vercel.app). Trust the whole *.vercel.app
+# wildcard so neither of those returns 400 DisallowedHost.
+if os.environ.get('VERCEL'):
+    ALLOWED_HOSTS += ['.vercel.app']
 
 CSRF_TRUSTED_ORIGINS = [
     o for o in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if o
@@ -76,7 +83,7 @@ SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -111,15 +118,6 @@ WSGI_APPLICATION = 'drinkshop.wsgi.application'
 
 # ---------------------------------------------------------------------------
 # Database
-# Defaults to SQLite for easy local dev. On serverless hosts like Vercel the
-# filesystem is read-only/ephemeral, so SQLite can't persist there — set
-# DATABASE_URL (Vercel Postgres, Neon, Supabase, etc.) and it takes over
-# automatically. See README "Deploying to Vercel".
-# ---------------------------------------------------------------------------
-
-
-# ---------------------------------------------------------------------------
-# Database
 # Local dev falls back to SQLite so `runserver` works with zero setup.
 # On Vercel (or any serverless/container host with an ephemeral filesystem),
 # set DATABASE_URL to a managed Postgres URL — Vercel Postgres, Neon,
@@ -135,6 +133,7 @@ DATABASES = {
         ssl_require=not DEBUG,
     )
 }
+
 # ---------------------------------------------------------------------------
 # Password validation
 # ---------------------------------------------------------------------------
@@ -155,23 +154,23 @@ USE_TZ = True
 
 # ---------------------------------------------------------------------------
 # Static & media files
-# Product images (and any other uploaded media) are stored on Cloudinary
-# instead of local disk — required for hosts with an ephemeral filesystem,
-# and gives free image CDN/transformations. Get credentials from
-# https://cloudinary.com/console.
+#
+# Static files (CSS/JS/icons) are served by WhiteNoise, which runs inside the
+# WSGI process — that's what makes them work on Vercel, where there's no
+# writable disk and no CDN layer for /static/ out of the box.
+#
+# Media uploads (product images, avatars, background photos) go to Cloudinary
+# when credentials are set, and fall back to local disk otherwise so
+# `runserver` still works during initial local setup.
+#
+# The modern STORAGES dict (Django 5+) replaces the deprecated
+# DEFAULT_FILE_STORAGE / STATICFILES_STORAGE settings — setting both at once
+# raises an ImproperlyConfigured error.
 # ---------------------------------------------------------------------------
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
 MEDIA_URL = '/media/'
 
 CLOUDINARY_STORAGE = {
@@ -181,17 +180,17 @@ CLOUDINARY_STORAGE = {
 }
 
 if CLOUDINARY_STORAGE['CLOUD_NAME']:
-    MEDIA_STORAGE_BACKEND = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    _media_backend = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 else:
-    MEDIA_STORAGE_BACKEND = 'django.core.files.storage.FileSystemStorage'
+    _media_backend = 'django.core.files.storage.FileSystemStorage'
     MEDIA_ROOT = BASE_DIR / 'media'
 
 STORAGES = {
-    "default": {
-        "BACKEND": MEDIA_STORAGE_BACKEND,
+    'default': {
+        'BACKEND': _media_backend,
     },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
 
@@ -296,9 +295,7 @@ MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY', '')
 MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET', '')
 MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE', '174379')  # sandbox default
 MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY', '')
-MPESA_CALLBACK_URL = os.environ.get(
-    'MPESA_CALLBACK_URL', ''
-)
+MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', '')
 
 if MPESA_ENV == 'production':
     MPESA_AUTH_URL = 'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
@@ -325,21 +322,5 @@ MPESA_B2C_RESULT_URL = os.environ.get('MPESA_B2C_RESULT_URL', 'https://radicaldr
 # Minimum wallet balance a user must have to request a withdrawal.
 WALLET_MIN_WITHDRAWAL_KES = int(os.environ.get('WALLET_MIN_WITHDRAWAL_KES', '1000'))
 
-
-
-import sys
-if sys.version_info >= (3, 14):
-    import copy as _copy_module
-    from django.template.context import BaseContext
-
-    def _patched_copy(self):
-        duplicate = BaseContext()
-        duplicate.__class__ = self.__class__
-        duplicate.__dict__ = self.__dict__.copy()
-        duplicate.dicts = self.dicts[:]
-        return duplicate
-
-    BaseContext.__copy__ = _patched_copy
-
-MPESA_ACCOUNT_PREFIX = "Radical DrinkShop"      # or "Radical DrinkShop"
-MPESA_DEFAULT_DESC  = "Payment for DrinkShop order"    
+MPESA_ACCOUNT_PREFIX = "Radical DrinkShop"
+MPESA_DEFAULT_DESC = "Payment for DrinkShop order"
