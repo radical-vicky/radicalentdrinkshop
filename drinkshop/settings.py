@@ -245,7 +245,7 @@ SOCIALACCOUNT_PROVIDERS = {
 EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
 if EMAIL_HOST and not DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', ''))
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
     # Gmail displays app passwords with spaces for readability; strip them
     # so it doesn't matter whether you paste it with or without spaces.
