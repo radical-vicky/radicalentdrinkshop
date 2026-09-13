@@ -242,14 +242,14 @@ SOCIALACCOUNT_PROVIDERS = {
 # emailing real customers. Real SMTP only switches on once you deploy with
 # DJANGO_DEBUG=False AND EMAIL_HOST set.
 # ---------------------------------------------------------------------------
-EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
 if EMAIL_HOST and not DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'entreprenuerridicular@gmail.com')
     # Gmail displays app passwords with spaces for readability; strip them
     # so it doesn't matter whether you paste it with or without spaces.
-    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '').replace(' ', '')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'fxugewewmwktvvsb').replace(' ', '')
     EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
     EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False') == 'True'
 else:
