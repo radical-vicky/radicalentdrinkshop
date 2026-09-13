@@ -17,6 +17,12 @@ class JobListing(models.Model):
     employment_type = models.CharField(max_length=20, choices=EmploymentType.choices, default=EmploymentType.FULL_TIME)
     description = models.TextField(help_text='What the role involves.')
     requirements = models.TextField(blank=True, help_text='One requirement per line.')
+    image = models.ImageField(
+        upload_to='careers/',
+        blank=True,
+        null=True,
+        help_text='Optional banner image shown at the top of the job listing.',
+    )
     is_active = models.BooleanField(default=True, help_text='Turn off to stop accepting applications without deleting the listing.')
     posted_at = models.DateTimeField(auto_now_add=True)
 

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ job.title }} — Careers — DrinkShop{% endblock %}
+{% block title %}{{ job.title }} — Careers — RadicalDrinkShop{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -7,6 +7,10 @@
     <span class="eyebrow">{{ job.department }} &middot; {{ job.location }} &middot; {{ job.get_employment_type_display }}</span>
     <h1>{{ job.title }}</h1>
 </div>
+
+{% if job.image %}
+    <img src="{{ job.image.url }}" alt="{{ job.title }}" class="job-banner">
+{% endif %}
 
 <div class="job-detail-layout">
     <div>

@@ -1116,9 +1116,42 @@ main .container { padding-top: 28px; }
    Careers
    ========================================================================= */
 .job-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
-.job-card { padding: 20px; text-decoration: none; color: var(--text); display: block; transition: transform 0.3s var(--ease); }
+
+.job-card {
+    padding: 0;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+    overflow: hidden;                    /* clips the banner to the card's corners */
+    transition: transform 0.3s var(--ease);
+}
 .job-card:hover { transform: translateY(-3px); }
-.job-card h3 { margin: 10px 0 4px; font-size: 1.1rem; }
+
+/* Job card banner (list page) */
+.job-card-thumb {
+    display: block;
+    width: 100%;
+    height: 160px;
+    object-fit: cover;                   /* crops, doesn't squash */
+    border-bottom: 1px solid var(--border-glass);
+}
+
+/* With padding: 0 on .job-card, text content needs its own insets */
+.job-card .badge { margin: 18px 20px 0; }
+.job-card h3 { margin: 10px 20px 4px; font-size: 1.1rem; }
+.job-card p { margin: 0 20px 20px; }
+
+/* Job banner (detail page) */
+.job-banner {
+    display: block;
+    width: 100%;
+    max-height: 340px;
+    object-fit: cover;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-glass);
+    margin: 0 0 28px;
+}
+
 .job-detail-layout { display: flex; gap: 40px; flex-wrap: wrap; }
 .job-detail-layout > div:first-child { flex: 2; min-width: 280px; }
 .job-detail-layout > .form-card { flex: 1; min-width: 280px; height: fit-content; }

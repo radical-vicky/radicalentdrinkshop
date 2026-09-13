@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Careers — DrinkShop{% endblock %}
+{% block title %}Careers — RadicalDrinkShop{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -15,6 +15,9 @@
 <div class="job-grid">
     {% for job in jobs %}
         <a href="{{ job.get_absolute_url }}" class="glass job-card">
+            {% if job.image %}
+                <img src="{{ job.image.url }}" alt="{{ job.title }}" class="job-card-thumb">
+            {% endif %}
             <span class="badge">{{ job.department }}</span>
             <h3>{{ job.title }}</h3>
             <p class="muted">{{ job.location }} &middot; {{ job.get_employment_type_display }}</p>

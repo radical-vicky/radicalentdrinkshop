@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import JobApplication, JobListing
 
@@ -17,6 +18,34 @@ class JobListingAdmin(admin.ModelAdmin):
     search_fields = ('title', 'department', 'description')
     prepopulated_fields = {'slug': ('title',)}
     inlines = [JobApplicationInline]
+
+    fieldsets = (
+        ('Basic info', {
+            'fields': ('title', 'slug', 'department', 'location', 'employment_type')
+        }),
+        ('Content', {
+            'fields': ('description', 'requirements')
+        }),
+        ('Media', {
+            'fields': ('image', 'image_preview'),
+            'description': "Optional banner image shown at the top of the job listing.",
+        }),
+        ('Visibility', {
+            'fields': ('is_active',)
+        }),
+    )
+
+    readonly_fields = ('image_preview',)
+
+    def image_preview(self, obj):
+        if not obj.image:
+            return '—'
+        return format_html(
+            '<img src="{}" style="max-height: 160px; border-radius: 6px;" />',
+            obj.image.url,
+        )
+
+    image_preview.short_description = 'Preview'
 
 
 @admin.register(JobApplication)
