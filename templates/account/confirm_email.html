@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Verify your email — DrinkShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-head">
+        <span class="eyebrow">Account</span>
+        <h1>Verify your email address</h1>
+        <p class="lede">
+            We've sent a verification link to <strong>{{ email }}</strong>.
+            Click the link in that email to finish setting up your account.
+        </p>
+    </div>
+
+    <div class="glass form-card wide">
+        <h3 style="margin-top:0">Didn't get the email?</h3>
+        <p class="muted" style="margin-top:0">
+            Check your spam or promotions folder. It can take a minute or two to arrive.
+            If it still hasn't shown up, you can request a new one below.
+        </p>
+
+        <form method="post" action="{% url 'account_email' %}" class="auth-form" style="max-width:none;margin-top:16px">
+            {% csrf_token %}
+            <button type="submit" name="action_send" class="btn">Resend verification email</button>
+        </form>
+
+        <hr style="border:none;border-top:1px solid var(--border-glass);margin:24px 0;">
+
+        <p class="muted" style="margin-bottom:8px">Already verified?</p>
+        <a href="{% url 'account_login' %}" class="btn btn-outline btn-small">Sign in</a>
+    </div>
+</div>
+{% endblock %}
